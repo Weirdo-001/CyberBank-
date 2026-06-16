@@ -141,32 +141,18 @@ def load_data():
 
 users, logs, txns = load_data()
 
-# ── Sidebar ────────────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("""
-    <div style="text-align:center;padding:1.2rem 0 1rem;">
-        <div style="font-size:2.5rem">🏦</div>
-        <div style="font-size:1rem;font-weight:700;margin-top:.4rem">Citadel National Bank</div>
-        <div style="font-size:.72rem;opacity:.6;margin-top:.2rem">Security Operations Center</div>
+# ── Header ────────────────────────────────────────────────────
+st.markdown("""
+<div style="background:linear-gradient(135deg,#0d2147,#1a3a6b);color:white;
+            padding:1.2rem 2rem;border-radius:14px;margin-bottom:1rem;
+            display:flex;align-items:center;gap:1rem;">
+    <span style="font-size:2rem">🏦</span>
+    <div>
+        <div style="font-size:1.2rem;font-weight:800">Citadel National Bank</div>
+        <div style="font-size:.78rem;opacity:.65">Security Operations Center · AES-256-GCM · bcrypt · OTP 2FA · RBAC · Flask (EC2) + Streamlit</div>
     </div>
-    <hr style="border-color:rgba(255,255,255,0.15);margin:.5rem 0 1rem;">
-    """, unsafe_allow_html=True)
-
-    page = st.radio("Navigation", [
-        "📊  Overview",
-        "🛡️  Threat Monitor",
-        "👥  User Accounts",
-        "💳  Transactions",
-        "📋  Audit Trail",
-    ], label_visibility="collapsed")
-
-    st.markdown("""
-    <hr style="border-color:rgba(255,255,255,0.15);margin:1rem 0;">
-    <div style="font-size:.72rem;opacity:.5;text-align:center;padding-bottom:.5rem;">
-        AES-256-GCM · bcrypt · OTP 2FA · RBAC<br>
-        Flask (EC2) + Streamlit (Analytics)
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
 
 # ── Metrics ────────────────────────────────────────────────────
 total_users    = len(users)
@@ -178,10 +164,19 @@ total_vol      = sum(t.get('amount', 0) for t in txns)
 failed_logins  = sum(1 for l in logs if l.get('action') == 'LOGIN_FAILED')
 otp_failures   = sum(1 for l in logs if 'OTP_FAILED' in str(l.get('action','')))
 
+# ── Tabs navigation (always visible) ─────────────────────────
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "📊 Overview",
+    "🛡️ Threat Monitor",
+    "👥 User Accounts",
+    "💳 Transactions",
+    "📋 Audit Trail",
+])
+
 # ══════════════════════════════════════════════════════════════
-# PAGE: OVERVIEW
+# TAB: OVERVIEW
 # ══════════════════════════════════════════════════════════════
-if "Overview" in page:
+with tab1:
     st.markdown("""
     <div style="background:linear-gradient(135deg,#0d2147,#1a3a6b);color:white;
                 padding:1.6rem 2rem;border-radius:14px;margin-bottom:1.8rem;">
