@@ -50,6 +50,37 @@ html,body,[class*="css"]{font-family:'Inter',sans-serif;}
     background:linear-gradient(180deg,#0d2147 0%,#1a3a6b 100%) !important;
 }
 [data-testid="stSidebar"] *{color:white !important;}
+
+/* Radio nav buttons — make labels clearly visible */
+[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    color:white !important;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:8px;
+    padding:8px 14px !important;
+    margin-bottom:5px !important;
+    display:flex !important;
+    align-items:center !important;
+    cursor:pointer;
+    transition:all .2s;
+    font-weight:500;
+    font-size:.88rem;
+}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:hover{
+    background:rgba(255,255,255,0.18) !important;
+    transform:translateX(4px);
+}
+/* Selected item highlight */
+[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked),
+[data-testid="stSidebar"] [data-testid="stRadio"] div[aria-checked="true"] label {
+    background:rgba(255,255,255,0.25) !important;
+    border-color:rgba(255,255,255,0.4) !important;
+}
+/* Hide the default radio circle — we style the whole label as a button */
+[data-testid="stSidebar"] [data-testid="stRadio"] [data-testid="stMarkdownContainer"],
+[data-testid="stSidebar"] [data-testid="stRadio"] span[data-baseweb="radio"] > div:first-child{
+    display:none !important;
+}
 [data-testid="stSidebar"] .stButton button{
     background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);
     color:white;border-radius:8px;width:100%;margin-bottom:4px;
