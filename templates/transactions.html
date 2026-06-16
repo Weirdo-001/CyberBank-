@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Transaction History — Citadel National Bank{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">📄 Transaction History</h1>
+
+    <div class="stats-row">
+        <div class="stat-card balance">
+            <div class="stat-value">₹{{ "{:,.2f}".format(user.balance) }}</div>
+            <div class="stat-label">Current Balance</div>
+        </div>
+        <div class="stat-card accent">
+            <div class="stat-value">{{ transactions|length }}</div>
+            <div class="stat-label">Total Transactions</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">📊 All Transactions</div>
+        {% if transactions %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date & Time</th>
+                        <th>Description</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Status</th>
+                        <th style="text-align:right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for txn in transactions %}
+                    <tr>
+                        <td>#{{ txn.id }}</td>
+                        <td>{{ txn.created_at[:19] }}</td>
+                        <td>{{ txn.description }}</td>
+                        <td>{{ txn.from_name or txn.from_account }}</td>
+                        <td>{{ txn.to_name or txn.to_account }}</td>
+                        <td><span class="badge badge-active">{{ txn.status }}</span></td>
+                        <td style="text-align:right">
+                            {% if txn.from_user_id == user.id %}
+                            <span class="amount-debit">- ₹{{ "{:,.2f}".format(txn.amount) }}</span>
+                            {% else %}
+                            <span class="amount-credit">+ ₹{{ "{:,.2f}".format(txn.amount) }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color: var(--text-secondary); text-align:center; padding:40px;">
+            No transactions found. <a href="{{ url_for('transfer') }}">Make your first transfer →</a>
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

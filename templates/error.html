@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Error {{ code }} — Citadel National Bank{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div>
+        <h1>{{ code }}</h1>
+        <p style="font-size:1.1rem;">{{ message }}</p>
+        <a href="{{ url_for('dashboard') if session.get('user_id') else url_for('landing') }}"
+           class="btn btn-primary mt-3">← Go Back Home</a>
+    </div>
+</div>
+{% endblock %}

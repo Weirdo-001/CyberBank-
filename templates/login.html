@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Login — Citadel National Bank{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>🔒 Secure Login</h2>
+        <p class="auth-subtitle">Enter your credentials to access your account</p>
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control"
+                       placeholder="Enter your username" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control"
+                       placeholder="Enter your password" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="{{ url_for('register') }}">Open a new account</a>
+        </div>
+
+        <!-- RBI Security Tips -->
+        <div class="security-tips">
+            <h4>🛡️ Security Tips (As per RBI Guidelines)</h4>
+            <ul>
+                <li>Never share your password, OTP, or PIN with anyone</li>
+                <li>Citadel Bank will never ask for your credentials via phone or email</li>
+                <li>Always check for 🔒 in the address bar before entering credentials</li>
+                <li>Report unauthorized transactions within 3 working days to limit your liability (RBI Circular, 2017)</li>
+                <li>Use strong passwords with uppercase, lowercase, numbers & special characters</li>
+                <li>Your account will be locked for 24 hours after 3 failed login attempts</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Edit User — Admin — Citadel National Bank{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">✏️ Edit User — {{ target_user.username }}</h1>
+
+    <div class="card" style="max-width:520px;">
+        <form method="POST" action="{{ url_for('admin_edit_user', uid=target_user.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-group">
+                <label>Username (read-only)</label>
+                <input type="text" class="form-control" value="{{ target_user.username }}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" class="form-control"
+                       value="{{ target_user.full_name }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control"
+                       value="{{ target_user.email }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" name="role" class="form-control">
+                    <option value="user" {{ 'selected' if target_user.role == 'user' }}>User</option>
+                    <option value="banker" {{ 'selected' if target_user.role == 'banker' }}>Banker</option>
+                    <option value="admin" {{ 'selected' if target_user.role == 'admin' }}>Admin</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="balance">Balance (₹)</label>
+                <input type="number" id="balance" name="balance" class="form-control"
+                       value="{{ target_user.balance }}" step="0.01">
+            </div>
+
+            <div class="form-group">
+                <label for="is_active">Account Status</label>
+                <select id="is_active" name="is_active" class="form-control">
+                    <option value="1" {{ 'selected' if target_user.is_active }}>Active</option>
+                    <option value="0" {{ 'selected' if not target_user.is_active }}>Inactive</option>
+                </select>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary" style="flex:1;">Save Changes</button>
+                <a href="{{ url_for('admin_users') }}" class="btn btn-outline" style="flex:1;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

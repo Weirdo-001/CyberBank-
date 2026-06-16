@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}My Profile — Citadel National Bank{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">👤 My Profile</h1>
+
+    <div class="card" style="max-width:600px;">
+        <div class="profile-header">
+            <div class="profile-avatar">{{ user.full_name[0] }}</div>
+            <div class="profile-info">
+                <h2>{{ user.full_name }}</h2>
+                <p>@{{ user.username }} · <span class="badge badge-{{ user.role }}">{{ user.role }}</span></p>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Account Number</div>
+                <div class="info-value" style="font-family:monospace;">{{ user.account_number }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Available Balance</div>
+                <div class="info-value" style="color:var(--success);">₹{{ "{:,.2f}".format(user.balance) }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Email</div>
+                <div class="info-value">{{ user.email }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Account Status</div>
+                <div class="info-value">
+                    {% if user.locked_until %}
+                    <span class="badge badge-locked">Locked</span>
+                    {% elif user.is_active %}
+                    <span class="badge badge-active">Active</span>
+                    {% else %}
+                    <span class="badge badge-locked">Inactive</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Member Since</div>
+                <div class="info-value">{{ user.created_at[:10] }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Role</div>
+                <div class="info-value" style="text-transform:capitalize;">{{ user.role }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

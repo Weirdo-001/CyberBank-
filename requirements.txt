@@ -1,0 +1,6 @@
+flask
+flask-wtf
+bcrypt
+cryptography
+streamlit
+pandas

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Manage Users — Admin — Citadel National Bank{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">👥 User Management</h1>
+
+    <div class="card">
+        <div class="card-header">All Registered Users ({{ users|length }})</div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Account</th>
+                        <th>Role</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                        <th>Failed Attempts</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td>{{ u.id }}</td>
+                        <td>{{ u.full_name }}</td>
+                        <td>@{{ u.username }}</td>
+                        <td style="font-family:monospace; font-size:0.8rem;">{{ u.account_number }}</td>
+                        <td><span class="badge badge-{{ u.role }}">{{ u.role }}</span></td>
+                        <td class="amount-credit">₹{{ "{:,.2f}".format(u.balance) }}</td>
+                        <td>
+                            {% if u.locked_until %}<span class="badge badge-locked">Locked</span>
+                            {% elif u.is_active %}<span class="badge badge-active">Active</span>
+                            {% else %}<span class="badge badge-locked">Inactive</span>{% endif %}
+                        </td>
+                        <td>{{ u.failed_attempts }}</td>
+                        <td>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <a href="{{ url_for('admin_edit_user', uid=u.id) }}" class="btn btn-sm btn-outline">Edit</a>
+                                {% if u.locked_until %}
+                                <form method="POST" action="{{ url_for('admin_unlock_user', uid=u.id) }}" style="display:inline;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-sm btn-warning">Unlock</button>
+                                </form>
+                                {% endif %}
+                                {% if u.id != session.get('user_id') %}
+                                <form method="POST" action="{{ url_for('admin_delete_user', uid=u.id) }}" style="display:inline;"
+                                      onsubmit="return confirm('Are you sure you want to permanently delete {{ u.username }}? This cannot be undone.');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

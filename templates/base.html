@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Citadel National Bank{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Scrolling Ticker Bar (RBI Notices) -->
+    <div class="ticker-bar">
+        <div class="ticker-label">📢 Important</div>
+        <div class="ticker-scroll">
+            <span><strong>RBI Advisory:</strong> Never share your OTP, PIN, or password with anyone, including bank officials.</span>
+            <span><strong>DICGC Insured:</strong> Deposits up to ₹5,00,000 are insured under DICGC (Deposit Insurance & Credit Guarantee Corporation).</span>
+            <span><strong>Fraud Alert:</strong> Citadel National Bank never asks for card details, CVV, or OTP via phone or email.</span>
+            <span><strong>KYC Update:</strong> As per RBI guidelines, please keep your KYC documents updated to avoid account restrictions.</span>
+            <span><strong>UPI Safety:</strong> No PIN is required to receive money via UPI. Beware of fraudulent collect requests.</span>
+            <span><strong>RBI Advisory:</strong> Never share your OTP, PIN, or password with anyone, including bank officials.</span>
+            <span><strong>DICGC Insured:</strong> Deposits up to ₹5,00,000 are insured under DICGC (Deposit Insurance & Credit Guarantee Corporation).</span>
+            <span><strong>Fraud Alert:</strong> Citadel National Bank never asks for card details, CVV, or OTP via phone or email.</span>
+            <span><strong>KYC Update:</strong> As per RBI guidelines, please keep your KYC documents updated to avoid account restrictions.</span>
+            <span><strong>UPI Safety:</strong> No PIN is required to receive money via UPI. Beware of fraudulent collect requests.</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="{{ url_for('landing') }}" class="navbar-brand">
+            <div class="logo-icon">🏦</div>
+            Citadel National Bank
+        </a>
+
+        {% if session.get('user_id') %}
+        <ul class="navbar-nav">
+            <li><a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint == 'dashboard' }}">Dashboard</a></li>
+            {% if session.get('role') in ['user', 'admin', 'banker'] %}
+            <li><a href="{{ url_for('transfer') }}" class="{{ 'active' if request.endpoint == 'transfer' }}">Transfer</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('transactions') }}" class="{{ 'active' if request.endpoint == 'transactions' }}">Transactions</a></li>
+            <li><a href="{{ url_for('profile') }}" class="{{ 'active' if request.endpoint == 'profile' }}">Profile</a></li>
+            {% if session.get('role') == 'admin' %}
+            <li><a href="{{ url_for('admin_users') }}" class="{{ 'active' if 'admin' in request.endpoint }}">Admin</a></li>
+            {% endif %}
+            {% if session.get('role') in ['banker', 'admin'] %}
+            <li><a href="{{ url_for('banker_customers') }}" class="{{ 'active' if request.endpoint == 'banker_customers' }}">Customers</a></li>
+            {% endif %}
+        </ul>
+        <div class="navbar-user">
+            <span>{{ session.get('username') }}</span>
+            <span class="role-badge">{{ session.get('role') }}</span>
+            <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+        </div>
+        {% else %}
+        <ul class="navbar-nav">
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('register') }}">Register</a></li>
+        </ul>
+        {% endif %}
+    </nav>
+
+    <!-- Flash Messages (bottom-right alerts) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container" id="flashContainer">
+        {% for category, message in messages %}
+        <div class="flash-msg {{ category }}" onclick="this.remove()">
+            {% if category == 'success' %}✅{% elif category == 'danger' %}🚨{% elif category == 'warning' %}⚠️{% else %}ℹ️{% endif %}
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Page Content -->
+    {% block content %}{% endblock %}
+
+    <!-- Banking Footer -->
+    <footer class="bank-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>🏦 Citadel National Bank</h4>
+                    <p>Licensed by the Reserve Bank of India (RBI) under the Banking Regulation Act, 1949. Committed to secure and transparent banking.</p>
+                    <div class="footer-badges">
+                        <span class="footer-badge">🛡️ RBI Regulated</span>
+                        <span class="footer-badge">🔒 256-bit SSL</span>
+                        <span class="footer-badge">✅ DICGC Insured</span>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Regulatory Policies</h4>
+                    <ul>
+                        <li>📋 RBI Master Direction on KYC</li>
+                        <li>📋 PMLA Act, 2002 Compliance</li>
+                        <li>📋 IT Act, 2000 — Cyber Security</li>
+                        <li>📋 DPSI Act, 2023 — Data Privacy</li>
+                        <li>📋 Banking Ombudsman Scheme</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Security Standards</h4>
+                    <ul>
+                        <li>🔐 2-Factor Authentication (OTP)</li>
+                        <li>🔐 Bcrypt Password Hashing</li>
+                        <li>🔐 AES-256 Data Encryption</li>
+                        <li>🔐 CSRF Token Protection</li>
+                        <li>🔐 Session Timeout (15 min)</li>
+                        <li>🔐 Account Lockout Policy</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Customer Awareness</h4>
+                    <ul>
+                        <li>⚠️ Never share OTP with anyone</li>
+                        <li>⚠️ Bank never asks for PIN/CVV</li>
+                        <li>⚠️ Report fraud: 1930 (Cyber Crime)</li>
+                        <li>⚠️ Use strong, unique passwords</li>
+                        <li>⚠️ Verify URLs before login</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="footer-bottom">
+                <span>© 2026 Citadel National Bank Ltd. All rights reserved. CIN: U67190MH2026PLC000000</span>
+                <span>DICGC | RBI | NPCI | Grievance Redressal | Privacy Policy</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auto-dismiss flash messages after 6 seconds -->
+    <script>
+        setTimeout(function() {
+            var container = document.getElementById('flashContainer');
+            if (container) {
+                container.style.transition = 'opacity 0.5s';
+                container.style.opacity = '0';
+                setTimeout(function() { container.remove(); }, 500);
+            }
+        }, 6000);
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

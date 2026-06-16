@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Delivery — Citadel National Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="background: var(--bg);">
+    <div class="otp-display-card">
+        {% if otp %}
+        <div style="font-size:2rem; margin-bottom:12px;">📱</div>
+        <h2 style="color: var(--primary); margin-bottom:6px;">OTP Delivery</h2>
+        <p style="color: var(--text-secondary); font-size:0.85rem; margin-bottom:6px;">
+            Simulated {{ 'login' if purpose == 'login' else 'transaction' }} OTP for <strong>{{ username }}</strong>
+        </p>
+
+        <div class="otp-code">{{ otp }}</div>
+
+        <p style="color: var(--text-secondary); font-size:0.8rem;">
+            This OTP expires in <strong>5 minutes</strong>.<br>
+            Do not share this code with anyone.
+        </p>
+
+        <div style="background: var(--warning-light); padding:12px; border-radius: var(--radius-sm); margin-top:16px; font-size:0.8rem; color: var(--warning);">
+            ⚠️ In a real banking application, this OTP would be delivered via SMS or email — never displayed on-screen.
+        </div>
+        {% else %}
+        <div style="font-size:2rem; margin-bottom:12px;">❌</div>
+        <h2 style="color: var(--danger);">OTP Unavailable</h2>
+        <p style="color: var(--text-secondary); margin-top:12px;">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

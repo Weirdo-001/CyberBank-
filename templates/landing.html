@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Citadel National Bank — Secure Digital Banking{% endblock %}
+
+{% block content %}
+<div class="landing-hero">
+    <div class="hero-content">
+        <h1>🏦 Citadel National Bank</h1>
+        <p>Your trusted partner in secure digital banking. Experience next-generation security protocols protecting every transaction, every login, every rupee.</p>
+        <div class="hero-actions">
+            <a href="{{ url_for('login') }}" class="btn btn-primary">Sign In to Your Account</a>
+            <a href="{{ url_for('register') }}" class="btn btn-outline">Open New Account</a>
+        </div>
+
+    </div>
+</div>z
+
+<!-- RBI Compliance & Regulatory Section -->
+<div class="rbi-section">
+    <h2>🏛️ Regulatory Compliance & Banking Policies</h2>
+    <p class="rbi-subtitle">Citadel National Bank operates under the strict supervision of the Reserve Bank of India (RBI) and adheres to all applicable banking regulations.</p>
+
+    <div class="compliance-grid">
+        <div class="compliance-card">
+            <div class="cc-icon">🏛️</div>
+            <h3>RBI Regulated</h3>
+            <p>Licensed under the Banking Regulation Act, 1949. Governed by RBI Master Directions on Interest Rate, KYC Norms, and Cyber Security Framework.</p>
+        </div>
+        <div class="compliance-card">
+            <div class="cc-icon">🛡️</div>
+            <h3>DICGC Insurance</h3>
+            <p>All deposits insured up to ₹5,00,000 per depositor under the Deposit Insurance & Credit Guarantee Corporation (DICGC), a subsidiary of RBI.</p>
+        </div>
+        <div class="compliance-card">
+            <div class="cc-icon">📋</div>
+            <h3>KYC/AML Compliance</h3>
+            <p>Compliant with PMLA Act 2002 and RBI's Master Direction on KYC. Customer identity verification is mandatory as per regulatory requirements.</p>
+        </div>
+        <div class="compliance-card">
+            <div class="cc-icon">🔒</div>
+            <h3>IT Act 2000 & CERT-In</h3>
+            <p>Compliant with Information Technology Act, 2000 and CERT-In guidelines for incident reporting. All systems follow RBI's Cyber Security Framework.</p>
+        </div>
+        <div class="compliance-card">
+            <div class="cc-icon">📊</div>
+            <h3>DPSI Act 2023</h3>
+            <p>Adheres to the Digital Personal Data Protection Act, 2023. Customer data is processed only for lawful purposes with appropriate consent.</p>
+        </div>
+        <div class="compliance-card">
+            <div class="cc-icon">⚖️</div>
+            <h3>Banking Ombudsman</h3>
+            <p>Customers can escalate unresolved grievances to the RBI Banking Ombudsman under the Integrated Ombudsman Scheme, 2021.</p>
+        </div>
+        <div class="compliance-card">
+            <div class="cc-icon">💳</div>
+            <h3>RBI Tokenisation</h3>
+            <p>Card-on-file tokenisation as per RBI circular dated 07.09.2021. No actual card data stored — only encrypted tokens.</p>
+        </div>
+        <div class="compliance-card">
+            <div class="cc-icon">📱</div>
+            <h3>NPCI & UPI Guidelines</h3>
+            <p>Registered with National Payments Corporation of India (NPCI). All digital transactions comply with UPI & IMPS safety protocols.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

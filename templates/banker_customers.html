@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Customer Accounts — Citadel National Bank{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">🏦 Customer Accounts</h1>
+
+    <div class="card">
+        <div class="card-header">All Customers ({{ customers|length }})</div>
+        {% if customers %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Account Number</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in customers %}
+                    <tr>
+                        <td>{{ c.id }}</td>
+                        <td>{{ c.full_name }}</td>
+                        <td>@{{ c.username }}</td>
+                        <td style="font-family:monospace;">{{ c.account_number }}</td>
+                        <td class="amount-credit">₹{{ "{:,.2f}".format(c.balance) }}</td>
+                        <td>
+                            {% if c.locked_until %}<span class="badge badge-locked">Locked</span>
+                            {% elif c.is_active %}<span class="badge badge-active">Active</span>
+                            {% else %}<span class="badge badge-locked">Inactive</span>{% endif %}
+                        </td>
+                        <td>{{ c.created_at[:10] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color:var(--text-secondary); text-align:center; padding:40px;">No customer accounts found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

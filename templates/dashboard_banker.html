@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Banker Dashboard — Citadel National Bank{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">🏦 Banker Dashboard</h1>
+
+    <div class="stats-row">
+        <div class="stat-card balance">
+            <div class="stat-value">₹{{ "{:,.2f}".format(user.balance) }}</div>
+            <div class="stat-label">Your Balance</div>
+        </div>
+        <div class="stat-card accent">
+            <div class="stat-value">{{ customers|length }}</div>
+            <div class="stat-label">Total Customers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ user.account_number }}</div>
+            <div class="stat-label">Your Account</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">⚡ Banker Actions</div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('banker_customers') }}" class="btn btn-primary">👥 View Customers</a>
+            <a href="{{ url_for('transfer') }}" class="btn btn-outline">💸 Send Money</a>
+            <a href="{{ url_for('transactions') }}" class="btn btn-outline">📄 My Transactions</a>
+        </div>
+    </div>
+
+    <!-- Recent customer list -->
+    <div class="card">
+        <div class="card-header">👥 Customer Accounts</div>
+        {% if customers %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>Name</th><th>Account</th><th>Balance</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    {% for c in customers[:10] %}
+                    <tr>
+                        <td>{{ c.full_name }}</td>
+                        <td style="font-family:monospace;">{{ c.account_number }}</td>
+                        <td class="amount-credit">₹{{ "{:,.2f}".format(c.balance) }}</td>
+                        <td>
+                            {% if c.locked_until %}<span class="badge badge-locked">Locked</span>
+                            {% elif c.is_active %}<span class="badge badge-active">Active</span>
+                            {% else %}<span class="badge badge-locked">Inactive</span>{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color:var(--text-secondary);text-align:center;padding:20px;">No customers found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
