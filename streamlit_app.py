@@ -251,9 +251,50 @@ with tab1:
     </div>""", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
-# PAGE: THREAT MONITOR
+# TAB: THREAT MONITOR
 # ══════════════════════════════════════════════════════════════
-elif "Threat" in page:
+with tab2:
+    st.markdown("""
+    <div style="background:linear-gradient(135deg,#7f1d1d,#991b1b);color:white;
+                padding:1.6rem 2rem;border-radius:14px;margin-bottom:1.8rem;">
+        <h2 style="margin:0;font-size:1.4rem;font-weight:800">🛡️ Threat Monitor</h2>
+        <p style="margin:.4rem 0 0;opacity:.65;font-size:.85rem">
+            Real-time security threat detection · CRITICAL &amp; WARNING events
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    threats = [l for l in logs if l.get('severity') in ('CRITICAL','WARNING')]
+    if not threats:
+        st.success("✅ No active threats detected.")
+    else:
+        c_t1, c_t2 = st.columns(2)
+        c_t1.metric("Critical Alerts", critical_count, delta=None)
+        c_t2.metric("Warnings",        warning_count,  delta=None)
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        for t in threats[:30]:
+            sev  = t.get('severity','INFO')
+            cls  = '' if sev == 'CRITICAL' else 'warn'
+            icon = '🔴' if sev == 'CRITICAL' else '🟡'
+            st.markdown(f"""
+            <div class="threat-row {cls}">
+                <div>
+                    <span style="font-weight:700">{icon} {t.get('action','')}</span>
+                    <span style="color:#6b7280;font-size:.8rem;margin-left:.8rem">{t.get('details','')}</span>
+                </div>
+                <div style="font-size:.75rem;color:#9ca3af;text-align:right">
+                    {t.get('username','—')}<br>{t.get('created_at','')[:16]}
+                </div>
+            </div>""", unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown('<div class="section-card"><div class="section-title">📊 Threat Severity Distribution</div>', unsafe_allow_html=True)
+    if logs:
+        sev_counts = Counter(l['severity'] for l in logs)
+        df_sev = pd.DataFrame({'Severity': list(sev_counts.keys()), 'Count': list(sev_counts.values())})
+        st.bar_chart(df_sev.set_index('Severity'), use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     st.markdown("""
     <div style="background:linear-gradient(135deg,#7f1d1d,#991b1b);color:white;
                 padding:1.6rem 2rem;border-radius:14px;margin-bottom:1.8rem;">
@@ -298,9 +339,53 @@ elif "Threat" in page:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
-# PAGE: USER ACCOUNTS
+# TAB: USER ACCOUNTS
 # ══════════════════════════════════════════════════════════════
-elif "User" in page:
+with tab3:
+    st.markdown("""
+    <div style="background:linear-gradient(135deg,#1a3a6b,#1e40af);color:white;
+                padding:1.6rem 2rem;border-radius:14px;margin-bottom:1.8rem;">
+        <h2 style="margin:0;font-size:1.4rem;font-weight:800">👥 User Account Management</h2>
+        <p style="margin:.4rem 0 0;opacity:.65;font-size:.85rem">
+            All registered users · Roles · Balances · Lock status
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    role_filter = st.selectbox("Filter by Role", ["All","admin","banker","user"])
+    filtered_u  = users if role_filter=="All" else [u for u in users if u['role']==role_filter]
+
+    role_counts = Counter(u['role'] for u in users)
+    ra,rb,rc,rd = st.columns(4)
+    ra.metric("Total",   len(users))
+    rb.metric("Admins",  role_counts.get('admin',0))
+    rc.metric("Bankers", role_counts.get('banker',0))
+    rd.metric("Users",   role_counts.get('user',0))
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    for u in filtered_u:
+        locked  = is_account_locked(u.get('locked_until'))
+        s_badge = '<span class="badge badge-locked">🔒 LOCKED</span>' if locked else '<span class="badge badge-active">✅ Active</span>'
+        r_badge = f'<span class="badge badge-{u["role"]}">{u["role"].upper()}</span>'
+        st.markdown(f"""
+        <div class="user-row">
+            <div>
+                <b>{u['full_name']}</b>
+                <span style="color:#9ca3af;font-size:.8rem;margin-left:.6rem">@{u['username']}</span><br>
+                <span style="font-size:.78rem;color:#6b7280">{u['account_number']} · {u['email']}</span>
+            </div>
+            <div style="text-align:right">
+                {r_badge} {s_badge}<br>
+                <span style="font-size:.85rem;font-weight:700;color:#1a3a6b">₹{u['balance']:,.2f}</span>
+            </div>
+        </div>""", unsafe_allow_html=True)
+        if locked:
+            if st.button(f"🔓 Unlock {u['username']}", key=f"ul_{u['id']}"):
+                unlock_account(u['id'])
+                log_audit(None,'streamlit_ops','ADMIN_UNLOCK_USER',f"Unlocked {u['username']} via Streamlit",'','INFO')
+                st.cache_data.clear()
+                st.success(f"✅ {u['username']} unlocked.")
+                st.rerun()
     st.markdown("""
     <div style="background:linear-gradient(135deg,#1a3a6b,#1e40af);color:white;
                 padding:1.6rem 2rem;border-radius:14px;margin-bottom:1.8rem;">
@@ -347,9 +432,45 @@ elif "User" in page:
                 st.rerun()
 
 # ══════════════════════════════════════════════════════════════
-# PAGE: TRANSACTIONS
+# TAB: TRANSACTIONS
 # ══════════════════════════════════════════════════════════════
-elif "Transaction" in page:
+with tab4:
+    st.markdown("""
+    <div style="background:linear-gradient(135deg,#065f46,#059669);color:white;
+                padding:1.6rem 2rem;border-radius:14px;margin-bottom:1.8rem;">
+        <h2 style="margin:0;font-size:1.4rem;font-weight:800">💳 Transaction Pipeline</h2>
+        <p style="margin:.4rem 0 0;opacity:.65;font-size:.85rem">
+            All OTP-verified fund transfers · Atomic DB execution
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if txns:
+        df_t = pd.DataFrame(txns)
+        t1,t2,t3 = st.columns(3)
+        t1.metric("Total Transfers", len(txns))
+        t2.metric("Total Volume",    f"₹{total_vol:,.2f}")
+        t3.metric("Avg Transfer",    f"₹{total_vol/len(txns):,.2f}")
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        st.markdown('<div class="section-card"><div class="section-title">📈 Transfer Volume Over Time</div>', unsafe_allow_html=True)
+        df_t['created_at'] = pd.to_datetime(df_t['created_at'], errors='coerce')
+        df_t['date'] = df_t['created_at'].dt.date
+        daily_vol = df_t.groupby('date')['amount'].sum()
+        st.area_chart(daily_vol, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="section-card"><div class="section-title">📋 All Transactions</div>', unsafe_allow_html=True)
+        display_cols = ['created_at','from_account','to_account','amount','description','status']
+        available = [c for c in display_cols if c in df_t.columns]
+        st.dataframe(df_t[available].rename(columns={
+            'created_at':'Timestamp','from_account':'From',
+            'to_account':'To','amount':'Amount (₹)',
+            'description':'Description','status':'Status'
+        }), use_container_width=True, height=380)
+        st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.info("No transactions recorded yet. Perform a transfer in the Flask app first.")
     st.markdown("""
     <div style="background:linear-gradient(135deg,#065f46,#059669);color:white;
                 padding:1.6rem 2rem;border-radius:14px;margin-bottom:1.8rem;">
@@ -388,9 +509,50 @@ elif "Transaction" in page:
         st.info("No transactions recorded yet. Perform a transfer in the Flask app first.")
 
 # ══════════════════════════════════════════════════════════════
-# PAGE: AUDIT TRAIL
+# TAB: AUDIT TRAIL
 # ══════════════════════════════════════════════════════════════
-elif "Audit" in page:
+with tab5:
+    st.markdown("""
+    <div style="background:linear-gradient(135deg,#4c1d95,#6d28d9);color:white;
+                padding:1.6rem 2rem;border-radius:14px;margin-bottom:1.8rem;">
+        <h2 style="margin:0;font-size:1.4rem;font-weight:800">📋 Security Audit Trail</h2>
+        <p style="margin:.4rem 0 0;opacity:.65;font-size:.85rem">
+            100% traceability · Every login, transfer, and admin action logged
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col_s, col_sev, col_act = st.columns([2,1,1])
+    search  = col_s.text_input("Search", placeholder="User, action, details, IP…")
+    sev_f   = col_sev.selectbox("Severity", ["All","CRITICAL","WARNING","INFO"])
+    actions = ["All"] + sorted(set(l.get('action','') for l in logs))
+    act_f   = col_act.selectbox("Action", actions)
+
+    filtered = logs
+    if search:
+        q = search.lower()
+        filtered = [l for l in filtered if any(q in str(l.get(k,'')).lower()
+                    for k in ('username','action','details','ip_address'))]
+    if sev_f != "All":
+        filtered = [l for l in filtered if l.get('severity')==sev_f]
+    if act_f != "All":
+        filtered = [l for l in filtered if l.get('action')==act_f]
+
+    st.markdown(f"**{len(filtered)} records**")
+    if filtered:
+        df_l = pd.DataFrame(filtered)
+        show_cols = ['created_at','username','action','severity','details','ip_address']
+        available = [c for c in show_cols if c in df_l.columns]
+        st.dataframe(
+            df_l[available].rename(columns={
+                'created_at':'Timestamp','username':'User',
+                'action':'Action','severity':'Severity',
+                'details':'Details','ip_address':'IP'
+            }),
+            use_container_width=True, height=480
+        )
+    else:
+        st.info("No logs match your filters.")
     st.markdown("""
     <div style="background:linear-gradient(135deg,#4c1d95,#6d28d9);color:white;
                 padding:1.6rem 2rem;border-radius:14px;margin-bottom:1.8rem;">
