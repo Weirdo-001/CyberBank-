@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Citadel National Bank — Secure Banking Portal</title>
+  <meta name="description" content="Citadel National Bank — enterprise-grade secure banking with OTP 2FA, AES-256 encryption, RBAC, and full audit trail."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0d2147;
+      --blue: #1a3a6b;
+      --accent: #3b82f6;
+      --gold: #f59e0b;
+      --text: #1e293b;
+      --muted: #64748b;
+      --bg: #f8fafc;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(13,33,71,0.95); backdrop-filter: blur(12px);
+      padding: .9rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-logo { display: flex; align-items: center; gap: .7rem; color: white; text-decoration: none; }
+    .nav-logo span { font-size: 1.5rem; }
+    .nav-logo b { font-size: 1rem; font-weight: 700; }
+    .nav-logo small { display: block; font-size: .65rem; opacity: .55; font-weight: 400; }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { color: rgba(255,255,255,.7); text-decoration: none; font-size: .85rem; transition: color .2s; }
+    .nav-links a:hover { color: white; }
+    .nav-btn {
+      background: var(--accent); color: white; padding: .5rem 1.3rem;
+      border-radius: 8px; font-size: .85rem; font-weight: 600;
+      text-decoration: none; transition: all .2s;
+    }
+    .nav-btn:hover { background: #2563eb; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0d2147 0%, #1a3a6b 50%, #0f3460 100%);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; padding: 8rem 2rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,.15) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 30%, rgba(245,158,11,.08) 0%, transparent 50%);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(59,130,246,.15); border: 1px solid rgba(59,130,246,.3);
+      color: #93c5fd; padding: .35rem 1rem; border-radius: 20px;
+      font-size: .78rem; font-weight: 600; margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 900;
+      color: white; line-height: 1.15; max-width: 750px;
+      position: relative;
+    }
+    .hero h1 span { color: #60a5fa; }
+    .hero p {
+      color: rgba(255,255,255,.65); font-size: 1.05rem; max-width: 520px;
+      margin: 1.2rem auto 2rem; line-height: 1.7; position: relative;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; position: relative; }
+    .btn-primary {
+      background: var(--accent); color: white;
+      padding: .85rem 2rem; border-radius: 10px;
+      font-size: .95rem; font-weight: 700; text-decoration: none;
+      transition: all .25s; display: inline-flex; align-items: center; gap: .5rem;
+      box-shadow: 0 4px 20px rgba(59,130,246,.4);
+    }
+    .btn-primary:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(59,130,246,.5); }
+    .btn-outline {
+      background: transparent; color: white;
+      padding: .85rem 2rem; border-radius: 10px;
+      font-size: .95rem; font-weight: 600; text-decoration: none;
+      border: 1.5px solid rgba(255,255,255,.3); transition: all .25s;
+      display: inline-flex; align-items: center; gap: .5rem;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.6); }
+
+    .hero-stats {
+      display: flex; gap: 3rem; margin-top: 4rem;
+      position: relative; flex-wrap: wrap; justify-content: center;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num { font-size: 1.8rem; font-weight: 800; color: white; }
+    .hero-stat .lbl { font-size: .75rem; color: rgba(255,255,255,.5); margin-top: .2rem; }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      background: white; padding: 1.2rem 2.5rem;
+      display: flex; justify-content: center; align-items: center;
+      gap: 3rem; flex-wrap: wrap;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+    .trust-item { display: flex; align-items: center; gap: .5rem; color: var(--muted); font-size: .82rem; font-weight: 500; }
+    .trust-item span { font-size: 1.1rem; }
+
+    /* ── FEATURES ── */
+    .section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-label { color: var(--accent); font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .6rem; }
+    .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; color: var(--navy); margin-bottom: .8rem; }
+    .section-sub { color: var(--muted); font-size: .95rem; line-height: 1.7; max-width: 520px; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.4rem; margin-top: 3rem; }
+    .feature-card {
+      background: white; border-radius: 14px; padding: 1.6rem;
+      box-shadow: 0 2px 14px rgba(0,0,0,.05); border: 1px solid #f1f5f9;
+      transition: all .25s;
+    }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,.1); border-color: #bfdbfe; }
+    .feature-icon {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 1rem;
+    }
+    .feature-card h3 { font-size: .95rem; font-weight: 700; color: var(--navy); margin-bottom: .4rem; }
+    .feature-card p  { font-size: .82rem; color: var(--muted); line-height: 1.65; }
+    .feature-tag {
+      display: inline-block; margin-top: .8rem;
+      background: #eff6ff; color: var(--accent);
+      padding: 2px 8px; border-radius: 5px; font-size: .68rem; font-weight: 700;
+    }
+
+    /* ── SECURITY STRIP ── */
+    .security-strip {
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      padding: 4rem 2rem; text-align: center; color: white;
+    }
+    .security-strip h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: .6rem; }
+    .security-strip p  { opacity: .65; font-size: .9rem; margin-bottom: 2rem; }
+    .security-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; }
+    .pill {
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      color: white; padding: .45rem 1rem; border-radius: 20px; font-size: .8rem; font-weight: 600;
+    }
+
+    /* ── STACK ── */
+    .stack-section { background: #f1f5f9; padding: 4rem 2rem; text-align: center; }
+    .stack-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; margin-top: 2rem; }
+    .stack-chip {
+      background: white; border-radius: 10px; padding: .7rem 1.4rem;
+      font-size: .85rem; font-weight: 600; color: var(--navy);
+      box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid #e2e8f0;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: linear-gradient(135deg, #0d2147, #1e40af);
+      padding: 5rem 2rem; text-align: center; color: white;
+    }
+    .cta-section h2 { font-size: 2rem; font-weight: 800; margin-bottom: .7rem; }
+    .cta-section p  { opacity: .65; margin-bottom: 2rem; font-size: .95rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0d2147; color: rgba(255,255,255,.45);
+      padding: 1.5rem 2.5rem; text-align: center; font-size: .78rem;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .float { animation: float 4s ease-in-out infinite; }
+
+    @media (max-width: 640px) {
+      nav { padding: .9rem 1.2rem; }
+      .nav-links { display: none; }
+      .hero-stats { gap: 1.5rem; }
+      .trust-bar { gap: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span>🏦</span>
+    <div><b>Citadel National Bank</b><small>Secure Banking Portal</small></div>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#security">Security</a>
+    <a href="#stack">Tech Stack</a>
+    <a href="#portal" class="nav-btn">Sign In →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🔒 Enterprise-Grade Security · 2025</div>
+  <h1>Banking That Puts <span>Security First</span></h1>
+  <p>OTP multi-factor authentication, AES-256-GCM encryption, role-based access control, and a full security audit trail — built from the ground up.</p>
+  <div class="hero-btns">
+    <a href="#portal" class="btn-primary" id="signin-hero">🔐 Sign In to Portal</a>
+    <a href="#features" class="btn-outline">Explore Features →</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">AES-256</div><div class="lbl">GCM Encryption</div></div>
+    <div class="hero-stat"><div class="num">OTP 2FA</div><div class="lbl">Every Login & Transfer</div></div>
+    <div class="hero-stat"><div class="num">3-Tier</div><div class="lbl">Role-Based Access</div></div>
+    <div class="hero-stat"><div class="num">100%</div><div class="lbl">Audit Traceability</div></div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span>🛡️</span> bcrypt Password Hashing</div>
+  <div class="trust-item"><span>🔐</span> CSRF Protection</div>
+  <div class="trust-item"><span>🔒</span> Parameterized SQL</div>
+  <div class="trust-item"><span>⏱️</span> Session Timeout</div>
+  <div class="trust-item"><span>📋</span> Full Audit Trail</div>
+  <div class="trust-item"><span>☁️</span> Cloud Deployed</div>
+</div>
+
+<!-- FEATURES -->
+<div class="section" id="features">
+  <div class="section-label">Core Capabilities</div>
+  <div class="section-title">Every Layer Secured</div>
+  <div class="section-sub">Built with security at every layer — from database queries to session cookies to encryption at rest.</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#eff6ff">🔑</div>
+      <h3>OTP Multi-Factor Authentication</h3>
+      <p>Every login and fund transfer requires a time-limited one-time password generated via cryptographically secure PRNG and encrypted with AES-256-GCM before storage.</p>
+      <span class="feature-tag">secrets.token_urlsafe</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#fef3c7">👥</div>
+      <h3>Role-Based Access Control</h3>
+      <p>Three-tier RBAC (Admin / Banker / User) enforced via Python decorators on every route. Unauthorized access attempts are logged instantly to the audit trail.</p>
+      <span class="feature-tag">@role_required</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#fee2e2">🔒</div>
+      <h3>Account Lockout & Brute-Force Defense</h3>
+      <p>Accounts lock for 24 hours after 3 failed login attempts. OTP also locks after 3 wrong entries. All events logged with severity levels.</p>
+      <span class="feature-tag">MAX_FAILED_ATTEMPTS = 3</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#d1fae5">⚡</div>
+      <h3>Atomic Fund Transfers</h3>
+      <p>Transfers execute inside a single <code>BEGIN EXCLUSIVE</code> SQLite transaction — balance read, validation, debit, credit, and record all happen atomically. No TOCTOU race possible.</p>
+      <span class="feature-tag">BEGIN EXCLUSIVE</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#f3e8ff">🛡️</div>
+      <h3>CSRF & Session Security</h3>
+      <p>Flask-WTF CSRF tokens on all forms. SameSite=Lax cookies. 15-minute idle session timeout. Cache-Control: no-store headers prevent back-button access after logout.</p>
+      <span class="feature-tag">flask-wtf · SameSite=Lax</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#fff7ed">📋</div>
+      <h3>Security Audit Trail</h3>
+      <p>Every login attempt, OTP event, fund transfer, admin action, and session timeout is logged with timestamp, IP address, username, and severity level.</p>
+      <span class="feature-tag">log_audit() · IP · Severity</span>
+    </div>
+  </div>
+</div>
+
+<!-- SECURITY STRIP -->
+<div class="security-strip" id="security">
+  <h2>🔐 Security at Every Layer</h2>
+  <p>No shortcuts. Every attack vector addressed with a real technical control.</p>
+  <div class="security-pills">
+    <div class="pill">AES-256-GCM Encryption</div>
+    <div class="pill">bcrypt + salt Password Hashing</div>
+    <div class="pill">Parameterized SQL Queries</div>
+    <div class="pill">IDOR Prevention</div>
+    <div class="pill">OTP 2FA on Login & Transfer</div>
+    <div class="pill">Column Whitelist (SQLi Defense)</div>
+    <div class="pill">Cryptographic Nonce per Encrypt</div>
+    <div class="pill">Session Idle Timeout</div>
+    <div class="pill">Cache-Control: no-store</div>
+    <div class="pill">CSRF Token Validation</div>
+    <div class="pill">Account Lockout Policy</div>
+    <div class="pill">Role-Based Route Guards</div>
+  </div>
+</div>
+
+<!-- STACK -->
+<div class="stack-section" id="stack">
+  <div class="section-label" style="justify-content:center;display:block">Technology Stack</div>
+  <div class="section-title" style="font-size:1.5rem">Built With</div>
+  <div class="stack-grid">
+    <div class="stack-chip">🐍 Python 3</div>
+    <div class="stack-chip">🌶️ Flask</div>
+    <div class="stack-chip">🗄️ SQLite</div>
+    <div class="stack-chip">🔒 AES-256-GCM</div>
+    <div class="stack-chip">🔑 bcrypt</div>
+    <div class="stack-chip">📊 Streamlit</div>
+    <div class="stack-chip">☁️ AWS EC2</div>
+    <div class="stack-chip">▲ Vercel</div>
+    <div class="stack-chip">🛡️ Flask-WTF CSRF</div>
+    <div class="stack-chip">🔐 OTP 2FA</div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section" id="portal">
+  <h2>Ready to Sign In?</h2>
+  <p>Access the secure banking portal. OTP verification required on every login.</p>
+  <a href="#" class="btn-primary" id="signin-cta" style="display:inline-flex">
+    🔐 Launch Banking Portal →
+  </a>
+  <br/><br/>
+  <a href="#" id="analytics-link" style="color:rgba(255,255,255,.5);font-size:.8rem;text-decoration:none">
+    📊 View Security Analytics Dashboard →
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  © 2025 Citadel National Bank · Secure Banking Portal ·
+  Python · Flask · SQLite · AES-256-GCM · Deployed on AWS EC2, Streamlit & Vercel
+</footer>
+
+</body>
+</html>
